@@ -1,4 +1,4 @@
-from fastapi import FastAPI, status
+from fastapi import FastAPI, status, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from pymongo import ASCENDING
 
@@ -9,6 +9,7 @@ from db.models import (
     ObjectID,
     json_loads,
 )
+from messaging import PrivateConnectionManager
 
 app = FastAPI()
 
@@ -31,6 +32,19 @@ async def create_chat_room(chat_input: ChatRoomInput):
     return JSONResponse(chat_room_response, status_code=status.HTTP_201_CREATED)
 
 
+@app.websocket("/chat-room/{chat_room_id}/chat")
+async def chat(websocket: WebSocket, chat_room_id: ObjectID, user_id: ObjectID):
+    try:
+        async with PrivateConnectionManager(
+            user_id=user_id, chat_room_id=chat_room_id, websocket=websocket
+        ) as conn:
+            while True:
+                data = await websocket.receive_text()
+                await conn.send_message(message=data)
+    except WebSocketDisconnect:
+        pass
+
+
 @app.patch("/chat-room/{chat_room_id}/deactivate")
 async def deactivate_chat_room(chat_room_id: ObjectID):
-    return JSONResponse({}, status_code=status.HTTP_200_OK)
+    return JSONResponse({"active": False}, status_code=status.HTTP_200_OK)
