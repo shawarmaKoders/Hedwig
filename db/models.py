@@ -1,11 +1,14 @@
 import os
-from pymodm import MongoModel, fields, connect
-from pymongo.operations import IndexModel
-from pymongo import ASCENDING, DESCENDING
-from typing import List
 from datetime import datetime
-from pydantic import BaseModel
+from typing import List
+
+from bson import ObjectId as BsonObjectID
+from bson.errors import InvalidId
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from pymodm import MongoModel, fields, connect
+from pymongo import ASCENDING, DESCENDING
+from pymongo.operations import IndexModel
 
 load_dotenv()
 MONGODB_URI = os.getenv("MONGODB_URI")
@@ -20,12 +23,22 @@ class CustomMongoModel(MongoModel):
         return dict_obj
 
 
-class UserField(fields.CharField):
+class UserField(fields.ObjectIdField):
     required = True
 
 
-class ObjectID(str):
-    pass
+class ObjectID(BsonObjectID):
+    @classmethod
+    def __get_validators__(cls):
+        yield cls.validate
+
+    @classmethod
+    def validate(cls, v):
+        try:
+            oid = BsonObjectID(v)
+        except InvalidId:
+            raise TypeError("ObjectId required")
+        return oid
 
 
 class ChatRoom(CustomMongoModel):
@@ -40,6 +53,9 @@ class ChatRoomInput(BaseModel):
     admin: ObjectID
     participants: List[ObjectID]
     active: bool = True
+
+    class Config:
+        arbitrary_types_allowed = True
 
 
 class ChatMessage(CustomMongoModel):
