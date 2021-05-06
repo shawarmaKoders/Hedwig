@@ -20,7 +20,12 @@ class ConnectionManager:
     ) -> None:
         await websocket.accept()
         print(f"# {user_id=} subscribe to channel={chat_room_id}")
-        self.connections[chat_room_id][user_id].append(websocket)
+        if chat_room_id not in self.connections:
+            self.connections[chat_room_id] = {user_id: [websocket]}
+        elif user_id not in self.connections[chat_room_id]:
+            self.connections[chat_room_id][user_id] = [websocket]
+        else:
+            self.connections[chat_room_id][user_id].append(websocket)
 
     async def disconnect(
         self, *, user_id: ObjectID, chat_room_id: ObjectID, websocket: WebSocket
@@ -38,7 +43,12 @@ class ConnectionManager:
         channel = chat_room_id
         print(f"# {user_id=} {message=} publish to {channel=}")
         save_chat_msg = sync_to_async(
-            ChatMessage(user=user_id, room=chat_room_id, **dict(message)).save,
+            ChatMessage(
+                user=user_id,
+                room=chat_room_id,
+                text=message.text,
+                time=message.time,
+            ).save,
             thread_sensitive=True,
         )
         save_in_db_task = asyncio.create_task(save_chat_msg())
@@ -54,7 +64,7 @@ class RoomUserConnection:
         self.websocket: WebSocket = websocket
 
     async def send_message(self, *, message: str):
-        chat_message_input: ChatMessageInput = loads(message)
+        chat_message_input = ChatMessageInput(**loads(message))
         await conn_manager.send_message(
             user_id=self.user_id,
             chat_room_id=self.chat_room,
