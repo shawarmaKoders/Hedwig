@@ -24,9 +24,13 @@ class CustomJSONEncoder(JSONEncoder):
         return JSONEncoder.default(self, o)
 
 
+def json_loads(obj):
+    return loads(CustomJSONEncoder().encode(obj))
+
+
 class CustomMongoModel(MongoModel):
     def to_json(self):
-        return loads(CustomJSONEncoder().encode(self.to_son().to_dict()))
+        return json_loads(self.to_son().to_dict())
 
 
 class UserField(fields.ObjectIdField):
