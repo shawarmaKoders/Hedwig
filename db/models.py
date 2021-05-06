@@ -45,10 +45,10 @@ class ObjectID(BsonObjectID):
     @classmethod
     def validate(cls, v):
         try:
-            oid = BsonObjectID(v)
+            BsonObjectID(v)
         except InvalidId:
             raise TypeError("ObjectId required")
-        return oid
+        return str(v)
 
 
 class ChatRoom(CustomMongoModel):
@@ -74,6 +74,7 @@ class ChatMessage(CustomMongoModel):
     )
     user = UserField()
     time = fields.TimestampField(required=True)
+    text = fields.CharField(min_length=1)
 
     class Meta:
         indexes = [
@@ -89,6 +90,5 @@ class ChatMessage(CustomMongoModel):
 
 
 class ChatMessageInput(BaseModel):
-    room: ObjectID
-    user: ObjectID
     time: datetime
+    text: str
