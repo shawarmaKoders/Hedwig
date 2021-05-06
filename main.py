@@ -1,8 +1,12 @@
 from fastapi import FastAPI
+from db.models import (
+    ChatRoom, ChatRoomInput,
+    ChatMessage, ChatMessageInput
+)
 
 app = FastAPI()
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.post("/chat-room/create")
+def create_chatroom(chat_input: ChatRoomInput):
+    return {}
