@@ -1,9 +1,23 @@
-from pymodm import MongoModel, fields
+import os
+from pymodm import MongoModel, fields, connect
 from pymongo.operations import IndexModel
 from pymongo import ASCENDING, DESCENDING
 from typing import List
 from datetime import datetime
 from pydantic import BaseModel
+from dotenv import load_dotenv
+
+load_dotenv()
+MONGODB_URI = os.getenv("MONGODB_URI")
+
+connect(MONGODB_URI)
+
+
+class CustomMongoModel(MongoModel):
+    def to_json(self):
+        dict_obj = self.to_son().to_dict()
+        dict_obj["_id"] = str(dict_obj["_id"])
+        return dict_obj
 
 
 class UserField(fields.CharField):
@@ -14,7 +28,7 @@ class ObjectID(str):
     pass
 
 
-class ChatRoom(MongoModel):
+class ChatRoom(CustomMongoModel):
     title = fields.CharField(min_length=1, required=True)
     admin = UserField()
     participants = fields.ListField(field=UserField())
@@ -28,8 +42,10 @@ class ChatRoomInput(BaseModel):
     active: bool = True
 
 
-class ChatMessage(MongoModel):
-    room = fields.ReferenceField(ChatRoom, required=True)
+class ChatMessage(CustomMongoModel):
+    room = fields.ReferenceField(
+        ChatRoom, required=True, on_delete=fields.ReferenceField.CASCADE
+    )
     user = UserField()
     time = fields.TimestampField(required=True)
 
@@ -37,11 +53,11 @@ class ChatMessage(MongoModel):
         indexes = [
             IndexModel(
                 keys=[
-                    ('time', DESCENDING),
-                    ('room', ASCENDING),
-                    ('user', ASCENDING),
+                    ("time", DESCENDING),
+                    ("room", ASCENDING),
+                    ("user", ASCENDING),
                 ],
-                unique=True
+                unique=True,
             )
         ]
 
