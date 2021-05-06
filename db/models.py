@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from json import loads, JSONEncoder
 from typing import List
 
 from bson import ObjectId as BsonObjectID
@@ -16,11 +17,16 @@ MONGODB_URI = os.getenv("MONGODB_URI")
 connect(MONGODB_URI)
 
 
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, o):
+        if isinstance(o, BsonObjectID):
+            return str(o)
+        return JSONEncoder.default(self, o)
+
+
 class CustomMongoModel(MongoModel):
     def to_json(self):
-        dict_obj = self.to_son().to_dict()
-        dict_obj["_id"] = str(dict_obj["_id"])
-        return dict_obj
+        return loads(CustomJSONEncoder().encode(self.to_son().to_dict()))
 
 
 class UserField(fields.ObjectIdField):
