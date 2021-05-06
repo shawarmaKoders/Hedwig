@@ -52,6 +52,14 @@ python-versions = "*"
 test = ["Cython (==0.29.22)"]
 
 [[package]]
+name = "ipaddress"
+version = "1.0.23"
+description = "IPv4/IPv6 manipulation library"
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "pydantic"
 version = "1.8.1"
 description = "Data validation and settings management using python 3.6 type hinting"
@@ -65,6 +73,21 @@ typing-extensions = ">=3.7.4.3"
 [package.extras]
 dotenv = ["python-dotenv (>=0.10.4)"]
 email = ["email-validator (>=1.0.3)"]
+
+[[package]]
+name = "pymodm"
+version = "0.4.3"
+description = "PyMODM is a generic ODM on top of PyMongo."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+ipaddress = "*"
+pymongo = ">=3.4,<4.0"
+
+[package.extras]
+images = ["pillow"]
 
 [[package]]
 name = "pymongo"
@@ -176,7 +199,7 @@ python-versions = ">=3.6.1"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "d03a67ba9a574938151a55dc89d66f0aadfb04702233d4e07c9e09b736dbe066"
+content-hash = "377a718ca35a7bcb1e63cdfe9c596cf26fdbc271b751885a2270a8ad5dad47c1"
 
 [metadata.files]
 click = [
@@ -212,6 +235,10 @@ httptools = [
     {file = "httptools-0.1.2-cp39-cp39-win_amd64.whl", hash = "sha256:9abd788465aa46a0f288bd3a99e53edd184177d6379e2098fd6097bb359ad9d6"},
     {file = "httptools-0.1.2.tar.gz", hash = "sha256:07659649fe6b3948b6490825f89abe5eb1cec79ebfaaa0b4bf30f3f33f3c2ba8"},
 ]
+ipaddress = [
+    {file = "ipaddress-1.0.23-py2.py3-none-any.whl", hash = "sha256:6e0f4a39e66cb5bb9a137b00276a2eff74f93b71dcbdad6f10ff7df9d3557fcc"},
+    {file = "ipaddress-1.0.23.tar.gz", hash = "sha256:b7f8e0369580bb4a24d5ba1d7cc29660a4a6987763faf1d8a8046830e020e7e2"},
+]
 pydantic = [
     {file = "pydantic-1.8.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:0c40162796fc8d0aa744875b60e4dc36834db9f2a25dbf9ba9664b1915a23850"},
     {file = "pydantic-1.8.1-cp36-cp36m-manylinux1_i686.whl", hash = "sha256:fff29fe54ec419338c522b908154a2efabeee4f483e48990f87e189661f31ce3"},
@@ -235,6 +262,11 @@ pydantic = [
     {file = "pydantic-1.8.1-cp39-cp39-win_amd64.whl", hash = "sha256:e8bc082afef97c5fd3903d05c6f7bb3a6af9fc18631b4cc9fedeb4720efb0c58"},
     {file = "pydantic-1.8.1-py3-none-any.whl", hash = "sha256:e3f8790c47ac42549dc8b045a67b0ca371c7f66e73040d0197ce6172b385e520"},
     {file = "pydantic-1.8.1.tar.gz", hash = "sha256:26cf3cb2e68ec6c0cfcb6293e69fb3450c5fd1ace87f46b64f678b0d29eac4c3"},
+]
+pymodm = [
+    {file = "pymodm-0.4.3-py2-none-any.whl", hash = "sha256:98e790bb457a7faf4e0aca71ff8a13d584eb6d9075db98202c8f1ce334675e55"},
+    {file = "pymodm-0.4.3-py3-none-any.whl", hash = "sha256:697b23d93695fdbaccc995912aecb203d1f1d8f8bff7ad90a9180f6a2986d084"},
+    {file = "pymodm-0.4.3.tar.gz", hash = "sha256:b9fc352dabca1c10bc9342167ab322ce2898b68a79c42e19f0baa7d5b7578ea1"},
 ]
 pymongo = [
     {file = "pymongo-3.11.4-cp27-cp27m-macosx_10_14_intel.whl", hash = "sha256:b7efc7e7049ef366777cfd35437c18a4166bb50a5606a1c840ee3b9624b54fc9"},

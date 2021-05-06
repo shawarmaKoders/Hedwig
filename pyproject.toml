@@ -10,6 +10,9 @@ python = "^3.9"
 pymongo = "^3.11.4"
 fastapi = "^0.63.0"
 uvicorn = {extras = ["standard"], version = "^0.13.4"}
+pymodm = "^0.4.3"
+pydantic = "^1.8.1"
+python-dotenv = "^0.17.1"
 
 [tool.poetry.dev-dependencies]
 
