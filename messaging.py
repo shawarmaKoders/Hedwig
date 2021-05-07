@@ -40,17 +40,18 @@ class ConnectionManager:
             reader(pubsub, websocket), name=f"Reader Task for {user_id=}"
         )
         self.reader_tasks.add(reader_task)
-        reader_task.add_done_callback(self.reader_tasks.discard)
+        # reader_task.add_done_callback(self.reader_tasks.discard)
 
     async def disconnect(
         self, *, user_id: ObjectID, chat_room_id: ObjectID, pubsub: PubSub
     ) -> None:
         channel = convert_room_to_channel(chat_room_id)
+        print(f"# {user_id=} un-subscribe to {channel=}")
         await pubsub.unsubscribe(channel)
         await asyncio.gather(*self.save_msg_in_db_tasks)
-        self.save_msg_in_db_tasks.clear()
-        for task in self.reader_tasks:
-            task.done()
+        # self.save_msg_in_db_tasks.clear()
+        # for task in self.reader_tasks:
+        #     task.done()
 
     async def send_message(
         self,
@@ -122,9 +123,10 @@ class PrivateConnectionManager:
         return self.room_user_connection
 
     async def __aexit__(self, exc_type, exc_val, exc_tb) -> None:
+        print("PrivateConnectionManager - __aexit__")
         await conn_manager.disconnect(
             user_id=self.room_user_connection.user_id,
             chat_room_id=self.room_user_connection.chat_room,
             pubsub=self.pubsub,
         )
-        await self.pubsub.close()
+        # await self.pubsub.close()
