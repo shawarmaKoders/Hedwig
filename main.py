@@ -2,29 +2,15 @@ import asyncio
 
 from fastapi import FastAPI, status, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
-from pymongo import ASCENDING
 
 from db.models import (
     ChatRoom,
     ChatRoomInput,
-    ChatMessage,
     ObjectID,
-    json_loads,
 )
 from messaging import PrivateConnectionManager
 
 app = FastAPI()
-
-
-async def get_chat_history(chat_room_id: ObjectID):
-    return json_loads(
-        list(
-            ChatMessage.objects.only("user", "time")
-            .raw({"room": chat_room_id})
-            .order_by([("time", ASCENDING)])
-            .values()
-        )
-    )
 
 
 @app.post("/chat-room/create")

@@ -5,9 +5,23 @@ from typing import Set
 from aioredis.client import PubSub
 from asgiref.sync import sync_to_async
 from fastapi import WebSocket
+from pymongo import ASCENDING
 
-from db.models import ObjectID, ChatMessageInput, ChatMessage
+from db.models import ObjectID, ChatMessageInput, ChatMessage, json_loads, BsonObjectID
 from redis_util import redis, reader
+
+
+async def get_chat_history(chat_room_id: ObjectID):
+    return dumps(
+        json_loads(
+            list(
+                ChatMessage.objects.only("user", "time", "text")
+                .raw({"room": BsonObjectID(chat_room_id)})
+                .order_by([("time", ASCENDING)])
+                .values()
+            )
+        )
+    )
 
 
 def convert_room_to_channel(chat_room_id: ObjectID):
@@ -32,6 +46,8 @@ class ConnectionManager:
         pubsub: PubSub,
     ) -> None:
         await websocket.accept()
+        chat_history = await get_chat_history(chat_room_id)
+        await websocket.send_text(chat_history)
 
         channel = convert_room_to_channel(chat_room_id)
         await pubsub.subscribe(channel)
