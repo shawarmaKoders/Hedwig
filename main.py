@@ -1,3 +1,5 @@
+import asyncio
+
 from fastapi import FastAPI, status, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
 from pymongo import ASCENDING
@@ -43,6 +45,7 @@ async def chat(websocket: WebSocket, chat_room_id: ObjectID, user_id: ObjectID):
             while True:
                 data = await websocket.receive_text()
                 await conn.send_message(message=data)
+                await asyncio.sleep(0)
     except WebSocketDisconnect:
         pass
 
