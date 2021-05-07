@@ -34,7 +34,6 @@ class ConnectionManager:
         await websocket.accept()
 
         channel = convert_room_to_channel(chat_room_id)
-        print(f"# {user_id=} subscribe to {channel=}")
         await pubsub.subscribe(channel)
         reader_task = asyncio.create_task(
             reader(pubsub, websocket), name=f"Reader Task for {user_id=}"
@@ -46,7 +45,6 @@ class ConnectionManager:
         self, *, user_id: ObjectID, chat_room_id: ObjectID, pubsub: PubSub
     ) -> None:
         channel = convert_room_to_channel(chat_room_id)
-        print(f"# {user_id=} un-subscribe to {channel=}")
         await pubsub.unsubscribe(channel)
         await asyncio.gather(*self.save_msg_in_db_tasks)
         self.save_msg_in_db_tasks.clear()
@@ -68,7 +66,6 @@ class ConnectionManager:
                 "text": message.text,
             }
         )
-        print(f"# {channel_message=} publish to {channel=}")
         await redis.publish(channel, channel_message)
         save_chat_msg = sync_to_async(
             ChatMessage(
@@ -129,4 +126,4 @@ class PrivateConnectionManager:
             chat_room_id=self.room_user_connection.chat_room,
             pubsub=self.pubsub,
         )
-        # await self.pubsub.close()
+        await self.pubsub.close()
