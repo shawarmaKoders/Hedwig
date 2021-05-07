@@ -73,7 +73,7 @@ class ChatMessage(CustomMongoModel):
         ChatRoom, required=True, on_delete=fields.ReferenceField.CASCADE
     )
     user = UserField()
-    time = fields.TimestampField(required=True)
+    time = fields.DateTimeField(required=True)
     text = fields.CharField(min_length=1)
 
     class Meta:

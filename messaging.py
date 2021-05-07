@@ -55,15 +55,16 @@ class ConnectionManager:
         message: ChatMessageInput,
     ):
         channel = convert_room_to_channel(chat_room_id)
-        channel_message = {"user": user_id, **dict(message)}
+        channel_message = {
+            "user": user_id,
+            "time": message.time.timestamp(),
+            "text": message.text,
+        }
         print(f"# TODO: {channel_message=} publish to {channel=}")
-        # redis.publish(channel, message)
+        # await redis.publish(channel, message)
         save_chat_msg = sync_to_async(
             ChatMessage(
-                user=user_id,
-                room=chat_room_id,
-                text=message.text,
-                time=message.time,
+                user=user_id, room=chat_room_id, text=message.text, time=message.time
             ).save,
             thread_sensitive=True,
         )
