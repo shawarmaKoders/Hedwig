@@ -23,7 +23,7 @@ async def reader(channel: aioredis.client.PubSub, websocket: WebSocket):
             message = await channel.get_message(ignore_subscribe_messages=True)
             if message is not None:
                 print(f"reader({channel=} => {message=}")
-                await websocket.send_text(message)
+                await websocket.send_text(message['data'])
         except websockets.exceptions.ConnectionClosedOK:
             print(f"reader({channel=}) - websockets.exceptions.ConnectionClosedOk")
             break
