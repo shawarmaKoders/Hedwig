@@ -1,6 +1,6 @@
 import asyncio
 from json import loads, dumps
-from typing import List
+from typing import Set
 
 from aioredis.client import PubSub
 from asgiref.sync import sync_to_async
@@ -16,12 +16,12 @@ def convert_room_to_channel(chat_room_id: ObjectID):
 
 class ConnectionManager:
 
-    save_msg_in_db_tasks: List[asyncio.Task]
-    reader_tasks: List[asyncio.Task]
+    save_msg_in_db_tasks: Set[asyncio.Task]
+    reader_tasks: Set[asyncio.Task]
 
     def __init__(self):
-        self.save_msg_in_db_tasks = []
-        self.reader_tasks = []
+        self.save_msg_in_db_tasks = set()
+        self.reader_tasks = set()
 
     async def connect(
         self,
@@ -36,16 +36,21 @@ class ConnectionManager:
         channel = convert_room_to_channel(chat_room_id)
         print(f"# {user_id=} subscribe to {channel=}")
         await pubsub.subscribe(channel)
-        self.reader_tasks.append(asyncio.create_task(reader(pubsub, websocket)))
+        reader_task = asyncio.create_task(
+            reader(pubsub, websocket), name=f"Reader Task for {user_id=}"
+        )
+        self.reader_tasks.add(reader_task)
+        reader_task.add_done_callback(self.reader_tasks.discard)
 
     async def disconnect(
         self, *, user_id: ObjectID, chat_room_id: ObjectID, pubsub: PubSub
     ) -> None:
         channel = convert_room_to_channel(chat_room_id)
         await pubsub.unsubscribe(channel)
-        print(
-            f"# TODO: Cancel Tasks: {self.save_msg_in_db_tasks=} {self.reader_tasks=}"
-        )
+        await asyncio.gather(*self.save_msg_in_db_tasks)
+        self.save_msg_in_db_tasks.clear()
+        for task in self.reader_tasks:
+            task.done()
 
     async def send_message(
         self,
@@ -55,11 +60,13 @@ class ConnectionManager:
         message: ChatMessageInput,
     ):
         channel = convert_room_to_channel(chat_room_id)
-        channel_message = dumps({
-            "user": user_id,
-            "time": message.time.timestamp(),
-            "text": message.text,
-        })
+        channel_message = dumps(
+            {
+                "user": user_id,
+                "time": message.time.timestamp(),
+                "text": message.text,
+            }
+        )
         print(f"# {channel_message=} publish to {channel=}")
         await redis.publish(channel, channel_message)
         save_chat_msg = sync_to_async(
@@ -68,7 +75,12 @@ class ConnectionManager:
             ).save,
             thread_sensitive=True,
         )
-        self.save_msg_in_db_tasks.append(asyncio.create_task(save_chat_msg()))
+        self.save_msg_in_db_tasks.add(
+            asyncio.create_task(
+                save_chat_msg(),
+                name=f"Save Message in DB Task {user_id=} {chat_room_id=}",
+            )
+        )
 
 
 conn_manager = ConnectionManager()
