@@ -35,7 +35,7 @@ async def create_chat_room(chat_input: ChatRoomInput):
 @app.websocket("/chat-room/{chat_room_id}/chat")
 async def chat(websocket: WebSocket, chat_room_id: ObjectID, user_id: ObjectID):
     print(f"{chat_room_id=}, {user_id=}")
-    # check if user exists in room or not
+    # check if user exists in an active room or not
     try:
         async with PrivateConnectionManager(
             user_id=user_id, chat_room_id=chat_room_id, websocket=websocket

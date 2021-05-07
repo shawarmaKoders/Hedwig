@@ -14,7 +14,7 @@ pymodm = "^0.4.3"
 pydantic = "^1.8.1"
 python-dotenv = "^0.17.1"
 dnspython = "^2.1.0"
-aioredis = {extras = ["hiredis"], version = "^1.3.1"}
+aioredis = {version = "2.0.0a1", extras = ["hiredis"]}
 asgiref = "^3.3.4"
 
 [tool.poetry.dev-dependencies]
