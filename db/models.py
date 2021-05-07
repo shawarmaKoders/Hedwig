@@ -21,6 +21,8 @@ class CustomJSONEncoder(JSONEncoder):
     def default(self, o):
         if isinstance(o, BsonObjectID):
             return str(o)
+        if isinstance(o, datetime):
+            return o.timestamp()
         return JSONEncoder.default(self, o)
 
 
