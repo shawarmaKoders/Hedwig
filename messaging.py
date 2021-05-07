@@ -1,5 +1,5 @@
 import asyncio
-from json import loads
+from json import loads, dumps
 from typing import List
 
 from aioredis.client import PubSub
@@ -55,13 +55,13 @@ class ConnectionManager:
         message: ChatMessageInput,
     ):
         channel = convert_room_to_channel(chat_room_id)
-        channel_message = {
+        channel_message = dumps({
             "user": user_id,
             "time": message.time.timestamp(),
             "text": message.text,
-        }
-        print(f"# TODO: {channel_message=} publish to {channel=}")
-        # await redis.publish(channel, message)
+        })
+        print(f"# {channel_message=} publish to {channel=}")
+        await redis.publish(channel, channel_message)
         save_chat_msg = sync_to_async(
             ChatMessage(
                 user=user_id, room=chat_room_id, text=message.text, time=message.time
