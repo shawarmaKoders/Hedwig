@@ -1,4 +1,4 @@
-# Hedwig
+# Hedwig 🦉💬
 
 **Hedwig, the messenger** is an asynchronus web-server to support chat-applications having multiple rooms/groups, each having two or more participants.
 
