@@ -1,14 +1,18 @@
 [[package]]
 name = "aioredis"
-version = "1.3.1"
+version = "2.0.0a1"
 description = "asyncio (PEP 3156) Redis support"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [package.dependencies]
 async-timeout = "*"
-hiredis = "*"
+hiredis = {version = ">=1.0", optional = true, markers = "implementation_name == \"cpython\" and extra == \"hiredis\""}
+typing-extensions = "*"
+
+[package.extras]
+hiredis = ["hiredis (>=1.0)"]
 
 [[package]]
 name = "appdirs"
@@ -351,12 +355,12 @@ python-versions = ">=3.6.1"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "6dd29e00ba31771d2985e348d57613c2d92a9cc50be339fa24fc71ff2dea55f8"
+content-hash = "5fb8b223e644ee45bc14703b034dd6895eef2e95f6f3fd602e232042950f2a82"
 
 [metadata.files]
 aioredis = [
-    {file = "aioredis-1.3.1-py3-none-any.whl", hash = "sha256:b61808d7e97b7cd5a92ed574937a079c9387fdadd22bfbfa7ad2fd319ecc26e3"},
-    {file = "aioredis-1.3.1.tar.gz", hash = "sha256:15f8af30b044c771aee6787e5ec24694c048184c7b9e54c3b60c750a4b93273a"},
+    {file = "aioredis-2.0.0a1-py3-none-any.whl", hash = "sha256:32d7910724282a475c91b8b34403867069a4f07bf0c5ad5fe66cd797322f9a0d"},
+    {file = "aioredis-2.0.0a1.tar.gz", hash = "sha256:5884f384b8ecb143bb73320a96e7c464fd38e117950a7d48340a35db8e35e7d2"},
 ]
 appdirs = [
     {file = "appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128"},
