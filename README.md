@@ -6,7 +6,7 @@ Hedwig is built using [FastAPI](https://fastapi.tiangolo.com/) and [websockets](
 
 ### Use-Case
 Ideal use-case of Hedwig would be when you have to add chat-rooms in various parts of your app or website, which is not chatting platform per se.  
-Hedwig opens a new webosocket connection for every chat room. This has been done deliberately so that resources are not wasted (in maintaining websocket-connections) when chatting features are not being used.
+Hedwig opens a new webosocket connection for every chat room. This has been done intentionally so that resources are not wasted (in maintaining websocket-connections) when chatting features are not being used.
 
 ## Usage
 - Install the dependencies (mentioned in [pyproject.toml](https://github.com/shawarmaKoders/Hedwig/blob/main/pyproject.toml) and [poetry.lock](https://github.com/shawarmaKoders/Hedwig/blob/main/poetry.lock))  
