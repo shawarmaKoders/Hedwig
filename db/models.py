@@ -59,6 +59,9 @@ class ChatRoom(CustomMongoModel):
     participants = fields.ListField(field=UserField())
     active = fields.BooleanField(default=True)
 
+    class Meta:
+        collection_name = "ChatRoom"
+
 
 class ChatRoomInput(BaseModel):
     title: str
@@ -79,6 +82,7 @@ class ChatMessage(CustomMongoModel):
     text = fields.CharField(min_length=1)
 
     class Meta:
+        collection_name = "ChatMessage"
         indexes = [
             IndexModel(
                 keys=[
