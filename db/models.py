@@ -62,6 +62,15 @@ class ChatRoom(CustomMongoModel):
     class Meta:
         collection_name = "ChatRoom"
 
+    @classmethod
+    def get_chat_room_json(cls, chat_room_id):
+        chat_room = json_loads(
+            cls.objects.only("title", "admin", "participants", "active")
+            .values()
+            .get({"_id": BsonObjectID(chat_room_id)})
+        )
+        return chat_room
+
 
 class ChatRoomInput(BaseModel):
     title: str
