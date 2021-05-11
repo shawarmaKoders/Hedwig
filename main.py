@@ -2,8 +2,9 @@ import asyncio
 
 from fastapi import FastAPI, status, WebSocket, WebSocketDisconnect
 from fastapi.responses import JSONResponse
+from pymodm.errors import DoesNotExist
 
-from db.models import ChatRoom, ChatRoomInput, ObjectID, DoesNotExist
+from db.models import ChatRoom, ChatRoomInput, ObjectID
 from messaging import PrivateConnectionManager
 
 app = FastAPI()
