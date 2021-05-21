@@ -6,6 +6,7 @@ from typing import List
 from bson import ObjectId as BsonObjectID
 from bson.errors import InvalidId
 from dotenv import load_dotenv
+from loguru import logger
 from pydantic import BaseModel
 from pymodm import MongoModel, fields, connect
 from pymongo import ASCENDING, DESCENDING
@@ -26,6 +27,7 @@ class CustomJSONEncoder(JSONEncoder):
         return JSONEncoder.default(self, o)
 
 
+@logger.catch
 def json_loads(obj):
     return loads(CustomJSONEncoder().encode(obj))
 
