@@ -4,6 +4,7 @@ import aioredis
 import websockets
 from dotenv import load_dotenv
 from fastapi import WebSocket
+from loguru import logger
 
 load_dotenv()
 
@@ -17,15 +18,17 @@ redis = aioredis.from_url(
 )
 
 
+@logger.catch
 async def reader(channel: aioredis.client.PubSub, websocket: WebSocket):
     while True:
         try:
             message = await channel.get_message(ignore_subscribe_messages=True)
             if message is not None:
+                logger.debug(f"{message=} => Websocket")
                 await websocket.send_text(message["data"])
         except websockets.exceptions.ConnectionClosedOK:
-            print(f"reader({channel=}) - websockets.exceptions.ConnectionClosedOk")
+            logger.debug(f"{channel=} - websockets.exceptions.ConnectionClosedOk")
             break
         except aioredis.exceptions.ConnectionError:
-            print(f"reader({channel=}) - aioredis.exceptions.ConnectionError")
+            logger.debug(f"{channel=} - aioredis.exceptions.ConnectionError")
             break
