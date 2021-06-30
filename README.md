@@ -1,8 +1,14 @@
 # Hedwig 🦉💬
+<img src="https://img.shields.io/badge/Python-FFD43B?style=for-the-badge&logo=python&logoColor=darkgreen" /> <img src="https://img.shields.io/badge/Messenger-00B2FF?style=for-the-badge&logo=messenger&logoColor=white" /> <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" /> <img src="https://img.shields.io/badge/redis-CC0000.svg?&style=for-the-badge&logo=redis&logoColor=white" /> <img src="https://img.shields.io/badge/fastapi-109989?style=for-the-badge&logo=FASTAPI&logoColor=white" />
 
 **Hedwig, the messenger** is an asynchronus web-server to support chat-applications having multiple rooms/groups, each having two or more participants.
 
 Hedwig is built using [FastAPI](https://fastapi.tiangolo.com/) and [websockets](https://websockets.readthedocs.io/en/stable/). [MongoDB](https://www.mongodb.com/) is used as the persistent storage, whereas [Redis](https://redis.io/) is used as the caching layer for messages - its [Pub/Sub](https://redis.io/topics/pubsub) feature is used for triggering sending/receiving of messages.
+
+### Flow-Diagram
+<p align="center">
+  <img src="./design/Hedwig.png">
+</p>
 
 ### Use-Case
 Ideal use-case of Hedwig would be when you have to add chat-rooms in various parts of your app or website, which is not chatting platform per se.  
