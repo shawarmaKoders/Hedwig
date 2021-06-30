@@ -5,6 +5,11 @@
 
 Hedwig is built using [FastAPI](https://fastapi.tiangolo.com/) and [websockets](https://websockets.readthedocs.io/en/stable/). [MongoDB](https://www.mongodb.com/) is used as the persistent storage, whereas [Redis](https://redis.io/) is used as the caching layer for messages - its [Pub/Sub](https://redis.io/topics/pubsub) feature is used for triggering sending/receiving of messages.
 
+### Flow-Diagram
+<p align="center">
+  <img src="./design/Hedwig.png">
+</p>
+
 ### Use-Case
 Ideal use-case of Hedwig would be when you have to add chat-rooms in various parts of your app or website, which is not chatting platform per se.  
 Hedwig opens a new webosocket connection for every chat room. This has been done intentionally so that resources are not wasted (in maintaining websocket-connections) when chatting features are not being used.
